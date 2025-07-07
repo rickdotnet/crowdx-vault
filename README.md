@@ -2,7 +2,16 @@
 
 ## Overview
 
-This is an experimental key-vault server that allows for decentralized access.
+This is an experimental key-vault server that allows for decentralized access-control.
+
+### Prerequisites
+
+- NATS Server with JetStream enabled
+  - `docker run -d nats:latest -js`
+
+### Running
+
+Tbd, but essentially have NATS running and then run the `Vault.Web` project.
 
 ## Usage
 

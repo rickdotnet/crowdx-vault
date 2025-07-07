@@ -111,14 +111,12 @@ public static class Startup
         app.UseHttpsRedirection();
         app.UseAntiforgery();
         app.MapStaticAssets();
-        app.MapRazorComponents<App>()
-            .AddInteractiveServerRenderMode();
+        app.MapRazorComponents<App>();//.AddInteractiveServerRenderMode();
         app.MapFallbackToFile("index.html");
         app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapApi();
-        //app.MapHtmx(); for special cases?
 
         return app;
     }
