@@ -12,6 +12,7 @@ This is an experimental key-vault server that allows for decentralized access-co
 ### Running
 
 Tbd, but essentially have NATS running and then run the `Vault.Web` project.
+![image](https://github.com/user-attachments/assets/23d1e983-9f36-4002-b67b-353027922404)
 
 ## Usage
 
