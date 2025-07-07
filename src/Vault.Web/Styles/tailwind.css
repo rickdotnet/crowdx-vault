@@ -1,0 +1,160 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --terminal-bg: #0f0f0f;
+    --terminal-surface: #1a1a1a;
+    --terminal-border: #333333;
+    --terminal-text: #e0e0e0;
+    --terminal-green: #00ff00;
+    --terminal-green-dim: #22c55e;
+    --terminal-cyan: #00ffff;
+    --terminal-red: #ff0000;
+    --terminal-yellow: #ffff00;
+  }
+  
+  body {
+    background-color: var(--terminal-bg);
+    color: var(--terminal-text);
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    line-height: 1.4;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  .terminal-container {
+    background-color: var(--terminal-bg);
+    border: 1px solid var(--terminal-border);
+    padding: 1rem;
+    margin: 0.5rem;
+  }
+  
+  .terminal-section {
+    background-color: var(--terminal-surface);
+    border: 1px solid var(--terminal-border);
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+  }
+  
+  .terminal-input {
+    background-color: var(--terminal-surface);
+    border: 1px solid var(--terminal-border);
+    color: var(--terminal-text);
+    padding: 0.5rem;
+    font-family: inherit;
+    width: 100%;
+  }
+  
+  .terminal-input:focus {
+    outline: none;
+    border-color: var(--terminal-cyan);
+    box-shadow: 0 0 0 1px var(--terminal-cyan);
+  }
+  
+  .terminal-button {
+    background-color: var(--terminal-surface);
+    border: 1px solid var(--terminal-border);
+    color: var(--terminal-green);
+    padding: 0.5rem 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .terminal-button:hover {
+    background-color: var(--terminal-border);
+    color: var(--terminal-green);
+    border-color: var(--terminal-green);
+  }
+  
+  .terminal-button:active {
+    background-color: var(--terminal-green);
+    color: var(--terminal-bg);
+  }
+  
+  .terminal-nav {
+    background-color: var(--terminal-surface);
+    border-bottom: 1px solid var(--terminal-border);
+    padding: 0.5rem;
+  }
+  
+  .terminal-nav a {
+    color: var(--terminal-cyan);
+    text-decoration: none;
+    padding: 0.5rem;
+    margin-right: 1rem;
+    border: 1px solid transparent;
+  }
+  
+  .terminal-nav a:hover {
+    border-color: var(--terminal-cyan);
+    background-color: var(--terminal-bg);
+  }
+  
+  .terminal-label {
+    color: var(--terminal-green-dim);
+    font-weight: normal;
+    margin-bottom: 0.25rem;
+    display: block;
+  }
+
+  .terminal-output {
+    background-color: var(--terminal-surface);
+    border: 1px solid var(--terminal-border);
+    padding: 0.75rem;
+    font-family: inherit;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  
+  .terminal-prompt::before {
+    content: '$ ';
+    color: var(--terminal-green);
+  }
+
+  .terminal-success{
+    margin-top: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .terminal-success::before {
+    content: '→ ';
+    color: var(--terminal-green);
+  }
+  
+  .terminal-error::before {
+    content: '✗ ';
+    color: var(--terminal-red);
+  }
+  
+  .terminal-info::before {
+    content: 'i ';
+    color: var(--terminal-cyan);
+  }
+  
+  .htmx-indicator {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+  
+  .htmx-request .htmx-indicator {
+    opacity: 1;
+  }
+  
+  .htmx-request .terminal-button {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  
+  .terminal-form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .terminal-form-group:last-child {
+    margin-bottom: 0;
+  }
+}

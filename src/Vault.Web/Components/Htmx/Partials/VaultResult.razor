@@ -1,0 +1,16 @@
+@page "/htmx/partials/vault-result"
+
+<div class="terminal-section">
+    <div class="terminal-info">Vault Created</div>
+    <div style="margin-top: 0.5rem;">
+        <div class="terminal-label">vault_id:</div>
+        <div class="terminal-output">@VaultId</div>
+    </div>
+</div>
+
+@code {
+
+    [SupplyParameterFromQuery]
+    public string VaultId { get; set; } = string.Empty;
+
+}

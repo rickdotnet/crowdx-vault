@@ -1,0 +1,94 @@
+@page "/htmx/partials/vault-put"
+@using System.Text.Json.Nodes
+@using NATS.Jwt.Models
+@using NATS.NKeys
+
+<div class="terminal-prompt">vault put @VaultId</div>
+<div class="terminal-section">
+    <form hx-put="/kv/@VaultId/{keyName}"
+          hx-ext="json-enc"
+          hx-headers='{"Authorization": "Bearer @jwt"}'
+          hx-target="#put-result"
+          hx-swap="innerHTML"
+          hx-indicator="#loading"
+          hx-params="not keyName"
+          hx-trigger="submit"
+          hx-disabled-elt="#submit-key"
+          hx-on:htmx:after-request="
+            if(event.detail.xhr.status === 200) {
+              const response = JSON.parse(event.detail.xhr.responseText);
+              const keyName = document.getElementById('keyName').value;
+              htmx.ajax('GET', '/htmx/partials/vault-get?vaultId=' + encodeURIComponent('@VaultId') + '&key=' + encodeURIComponent(keyName), '#vault-get');
+              document.getElementById('key-submit-group').style.display = 'none';
+              setTimeout(() => { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }, 100);
+            }">
+
+        <div class="terminal-form-group">
+            <label for="keyName" class="terminal-label">key_name:</label>
+            <input type="text" name="keyName" id="keyName" value="foo"
+                   class="terminal-input"/>
+        </div>
+        <div class="terminal-form-group">
+            <label for="keyValue" class="terminal-label">key_value:</label>
+            <input type="text" name="keyValue" id="keyValue" value="bar"
+                   class="terminal-input"/>
+        </div>
+
+        <div style="margin-top: 0.5rem;">
+            <div class="terminal-label">admin_token:</div>
+            <div class="terminal-output" id="admin-token">@jwt</div>
+        </div>
+
+        <div class="terminal-form-group" id="key-submit-group">
+            <button type="submit" id="submit-key" class="terminal-button">[CREATE_KEY]</button>
+            <span id="loading" class="htmx-indicator" style="margin-left: 1rem; color: var(--terminal-yellow);">processing...</span>
+        </div>
+    </form>
+
+    <div id="put-result" style="margin-top: 1rem;">
+    </div>
+</div>
+
+<script>
+    document.body.addEventListener('htmx:configRequest', function (evt) {
+        const keyName = document.getElementById('keyName').value;
+        evt.detail.path = evt.detail.path.replace('{keyName}', encodeURIComponent(keyName));
+
+        const adminToken = document.getElementById('admin-token').textContent;
+        if (adminToken) {
+            evt.detail.headers['Authorization'] = 'Bearer ' + document.getElementById('admin-token').textContent;
+        }
+    });
+</script>
+
+@code {
+
+    [SupplyParameterFromQuery]
+    public string VaultId { get; set; } = string.Empty;
+
+    [SupplyParameterFromQuery]
+    public string Seed { get; set; } = string.Empty;
+
+    private KeyPair? keyPair;
+    private string jwt = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        if (string.IsNullOrEmpty(Seed))
+            return;
+
+        keyPair = KeyPair.FromSeed(Seed);
+        var claims = new NatsGenericClaims
+        {
+            Subject = keyPair.GetPublicKey(),
+            Expires = DateTimeOffset.UtcNow.AddMonths(6),
+            Data = new Dictionary<string, JsonNode>()
+            {
+                { "vault:admin", VaultId }
+            }
+        };
+
+        jwt = JwtUtil.Encode(claims, keyPair);
+    }
+
+}
