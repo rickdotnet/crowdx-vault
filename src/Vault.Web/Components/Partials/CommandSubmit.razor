@@ -1,0 +1,14 @@
+<div class="terminal-form-group" id="@Id-group">
+    <button type="submit" id="@Id" class="terminal-button">@Text</button>
+    <span id="loading" class="htmx-indicator" style="margin-left: 1rem; color: var(--terminal-yellow);">processing...</span>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+
+}

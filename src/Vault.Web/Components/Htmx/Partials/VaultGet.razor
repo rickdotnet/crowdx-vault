@@ -1,10 +1,6 @@
 @page "/htmx/partials/vault-get"
-@using System.Text.Json.Nodes
-@using NATS.Jwt.Models
-@using NATS.NKeys
 
-<div class="terminal-prompt">vault get @VaultId @Key</div>
-<div class="terminal-section">
+<CommandDisplay Prompt="@($"vault get {VaultId} {Key}")">
     <form hx-get="/kv/@VaultId/@Key"
           hx-ext="json-enc"
           hx-target="#get-result"
@@ -15,25 +11,18 @@
           hx-on:htmx:after-request="
             if(event.detail.xhr.status === 200) {
               const response = JSON.parse(event.detail.xhr.responseText);
-              document.getElementById('get-submit-group').style.display = 'none';
+              document.getElementById('submit-get-group').style.display = 'none';
             }">
 
-        <div style="margin-top: 0.5rem; margin-bottom: 1rem;">
-            <div class="terminal-label">key_name:</div>
-            <div class="terminal-output" id="admin-token">@Key</div>
-        </div>
-
-        <div class="terminal-form-group" id="get-submit-group">
-            <button type="submit" id="submit-get" class="terminal-button">[GET_KEY]</button>
-            <span id="loading" class="htmx-indicator" style="margin-left: 1rem; color: var(--terminal-yellow);">processing...</span>
-        </div>
+        <CommandOutput Label="key_name:" Text="@Key"/>
+        <CommandSubmit Id="submit-get" Text="[GET_KEY]"/>
     </form>
 
-    <div id="get-result">
-    </div>
-</div>
+    <HtmxResult Id="get-result" />
+</CommandDisplay>
 
 @code {
+
     [SupplyParameterFromQuery]
     public string VaultId { get; set; } = string.Empty;
 

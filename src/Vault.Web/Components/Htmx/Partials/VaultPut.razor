@@ -3,8 +3,7 @@
 @using NATS.Jwt.Models
 @using NATS.NKeys
 
-<div class="terminal-prompt">vault put @VaultId</div>
-<div class="terminal-section">
+<CommandDisplay Prompt="@($"vault put {VaultId} foo")">
     <form hx-put="/kv/@VaultId/{keyName}"
           hx-ext="json-enc"
           hx-headers='{"Authorization": "Bearer @jwt"}'
@@ -19,36 +18,19 @@
               const response = JSON.parse(event.detail.xhr.responseText);
               const keyName = document.getElementById('keyName').value;
               htmx.ajax('GET', '/htmx/partials/vault-get?vaultId=' + encodeURIComponent('@VaultId') + '&key=' + encodeURIComponent(keyName), '#vault-get');
-              document.getElementById('key-submit-group').style.display = 'none';
+              document.getElementById('submit-key-group').style.display = 'none';
               setTimeout(() => { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }, 100);
             }">
 
-        <div class="terminal-form-group">
-            <label for="keyName" class="terminal-label">key_name:</label>
-            <input type="text" name="keyName" id="keyName" value="foo"
-                   class="terminal-input"/>
-        </div>
-        <div class="terminal-form-group">
-            <label for="keyValue" class="terminal-label">key_value:</label>
-            <input type="text" name="keyValue" id="keyValue" value="bar"
-                   class="terminal-input"/>
-        </div>
-
-        <div style="margin-top: 0.5rem;">
-            <div class="terminal-label">admin_token:</div>
-            <div class="terminal-output" id="admin-token">@jwt</div>
-        </div>
-
-        <div class="terminal-form-group" id="key-submit-group">
-            <button type="submit" id="submit-key" class="terminal-button">[CREATE_KEY]</button>
-            <span id="loading" class="htmx-indicator" style="margin-left: 1rem; color: var(--terminal-yellow);">processing...</span>
-        </div>
+        <CommandInput Id="keyName" Label="key_name:" Text="foo" />
+        <CommandInput Id="keyValue" Label="key_value:" Text="bar" />
+        <CommandOutput Id="admin-token" Label="admin_token:" Text="@jwt" />
+        <CommandSubmit Id="submit-key" Text="[CREATE_KEY]" />
     </form>
 
-    <div id="put-result" style="margin-top: 1rem;">
-    </div>
-</div>
-
+    <HtmxResult Id="put-result" />
+    
+</CommandDisplay>
 <script>
     document.body.addEventListener('htmx:configRequest', function (evt) {
         const keyName = document.getElementById('keyName').value;

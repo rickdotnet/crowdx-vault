@@ -1,0 +1,17 @@
+<div class="terminal-form-group">
+    <label for="@Id" class="terminal-label">@Label</label>
+    <input type="text" name="@Id" id="@Id" value="foo" class="terminal-input"/>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+
+}

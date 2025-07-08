@@ -2,25 +2,13 @@
 @using NATS.Jwt.Models
 @using NATS.NKeys
 
-<div class="terminal-prompt">vault init</div>
+<CommandDisplay Prompt="vault init">
+    <CommandOutput Label="seed:" Text="@keyPair.GetSeed()"/>
+    <CommandOutput Label="public_key:" Text="@keyPair.GetPublicKey()"/>
+    <CommandOutput Label="jwt_token:" Text="@jwt"/>
+</CommandDisplay>
 
-<div class="terminal-section">
-    <div style="margin-top: 0.5rem;">
-        <div class="terminal-label">seed:</div>
-        <div class="terminal-output">@keyPair.GetSeed()</div>
-    </div>
-    <div style="margin-top: 0.5rem;">
-        <div class="terminal-label">public_key:</div>
-        <div class="terminal-output">@keyPair.GetPublicKey()</div>
-    </div>
-    <div style="margin-top: 0.5rem;">
-        <div class="terminal-label">jwt_token:</div>
-        <div class="terminal-output">@jwt</div>
-    </div>
-</div>
-
-<div class="terminal-prompt">vault create</div>
-<div class="terminal-section">
+<CommandDisplay Prompt="vault create">
     <form hx-post="/kv"
           hx-ext="json-enc"
           hx-headers='{"Authorization": "Bearer @jwt"}'
@@ -32,43 +20,25 @@
           hx-on:htmx:after-request="
             if(event.detail.xhr.status === 200) {
               const response = JSON.parse(event.detail.xhr.responseText);
-              const seed = '@keyPair.GetSeed()';
               const vaultId = response.vaultId;
               htmx.ajax('GET', '/htmx/partials/vault-result?vaultId=' + encodeURIComponent(vaultId), '#vault-result');
               document.getElementById('vault-result').style.display = 'block';
-              htmx.ajax('GET', '/htmx/partials/vault-put?vaultId=' + encodeURIComponent(vaultId) + '&seed=' + encodeURIComponent(seed), '#vault-put');
-              document.getElementById('vault-submit-group').style.display = 'none';
+              htmx.ajax('GET', '/htmx/partials/vault-put?vaultId=' + encodeURIComponent(vaultId) + '&seed=' + encodeURIComponent('@keyPair.GetSeed()'), '#vault-put');
+              document.getElementById('submit-vault-group').style.display = 'none';
               setTimeout(() => { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }, 100);
             }">
-        <div class="terminal-form-group">
-            <label for="displayName" class="terminal-label">display_name:</label>
-            <input type="text" name="displayName" id="displayName" value="test-vault"
-                   class="terminal-input"/>
-        </div>
-        <div class="terminal-form-group">
-            <label for="description" class="terminal-label">description:</label>
-            <input type="text" name="description" id="description" value="Development test vault"
-                   class="terminal-input"/>
-        </div>
-        <div class="terminal-form-group" id="vault-submit-group">
-            <button type="submit" id="submit-vault" class="terminal-button">[CREATE_VAULT]</button>
-            <span id="loading" class="htmx-indicator" style="margin-left: 1rem; color: var(--terminal-yellow);">processing...</span>
-        </div>
+        
+        <CommandOutput Label="display_name:" Text="test-vault" />
+        <CommandOutput Label="description:" Text="Development test vault" />
+        <CommandSubmit Id="submit-vault" Text="[CREATE_VAULT]" />
     </form>
 
-    <div id="vault-result" style="display: none;">
-    </div>
-</div>
+    <HtmxResult Id="vault-result" />
+    
+</CommandDisplay>
 
-<div id="vault-put">
-   
-</div>
-
-<div id="vault-get">
-   
-</div>
-
-
+<HtmxResult Id="vault-put" />
+<HtmxResult Id="vault-get" />
 
 @code {
     private readonly KeyPair keyPair = KeyPair.CreatePair(PrefixByte.Account);

@@ -1,0 +1,16 @@
+<div style="margin-top: 0.5rem;">
+    <div class="terminal-label">@Label</div>
+    <div class="terminal-output" id="@Id">@Text</div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string? Id { get; set; }
+    
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+    
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+}

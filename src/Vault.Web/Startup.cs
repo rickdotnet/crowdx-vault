@@ -134,7 +134,7 @@ public static class Startup
     private static WebApplicationBuilder WithLogging(this WebApplicationBuilder builder)
     {
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
+            .MinimumLevel.Information()
             .Enrich.FromLogContext()
             .WriteTo.Console(
                 LogEventLevel.Debug,

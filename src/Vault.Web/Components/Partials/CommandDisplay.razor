@@ -1,0 +1,15 @@
+<div class="terminal-prompt">@Prompt</div>
+
+<div class="terminal-section">
+    @ChildContent
+</div>
+
+@code {
+
+    [Parameter]
+    public string Prompt { get; set; } = string.Empty;
+    
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+}
