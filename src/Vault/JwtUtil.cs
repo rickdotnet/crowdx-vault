@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -6,6 +7,7 @@ using NATS.Jwt.Models;
 using NATS.NKeys;
 using RickDotNet.Base;
 using RickDotNet.Extensions.Base;
+using RickBase32 = RickDotNet.Base.Utils.Base32;
 
 namespace Vault;
 
@@ -52,61 +54,53 @@ public class JwtUtil
                 return Result.Error("Invalid JWT: can't find issuer");
 
             var kp = KeyPair.FromPublicKey(issuer.AsSpan());
-            if (!kp.Verify(Encoding.ASCII.GetBytes(headerAndPayload), signature))
-                return Result.Error("JWT signature verification failed");
-
-            return Result.Success();
+            return kp.Verify(Encoding.ASCII.GetBytes(headerAndPayload), signature)
+                ? Result.Success()
+                : Result.Error("JWT signature verification failed");
         }
     }
 
     public static string Encode<T>(T claim, KeyPair keyPair, DateTimeOffset? now = null)
         where T : JwtClaimsData
     {
-        var h = Serialize(NatsJwt.NatsJwtHeader);
-        var c = claim;
-
-        if (string.IsNullOrWhiteSpace(c.Subject))
-        {
+        if (string.IsNullOrWhiteSpace(claim.Subject))
             throw new NatsJwtException("Subject is not set");
-        }
 
-        string issuer = keyPair.GetPublicKey();
+        claim.Issuer = keyPair.GetPublicKey();
+        claim.IssuedAt = now ?? DateTimeOffset.UtcNow;
+        claim.Id = Hash<JwtClaimsData>(claim);
 
-        c.Issuer = issuer;
-        c.IssuedAt = now ?? DateTimeOffset.UtcNow;
-        c.Id = Hash<JwtClaimsData>(c);
-
-        var payload = Serialize(c);
-        var toSign = $"{h}.{payload}";
+        var header = Serialize(NatsJwt.NatsJwtHeader);
+        var payload = Serialize(claim);
+        var toSign = $"{header}.{payload}";
         var sig = Encoding.ASCII.GetBytes(toSign);
         var signature = new byte[64];
         keyPair.Sign(sig, signature);
+        
         var eSig = EncodingUtils.ToBase64UrlEncoded(signature);
-
         return $"{toSign}.{eSig}";
     }
 
     private static string Serialize<T>(T data)
     {
         var bytes = JsonSerializer.SerializeToUtf8Bytes(data);
-        //JsonSerializer.Serialize(jsonWriter, data);
         return EncodingUtils.ToBase64UrlEncoded(bytes);
     }
 
     private static string Hash<T>(T c)
     {
         var bytes = JsonSerializer.SerializeToUtf8Bytes(c);
-
-        // TODO: ID generation same as Go implementation
-        // It's just an ID so we can use SHA-256
-        // var hasher = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        // hasher.AppendData(bytes);
-        // var hashResult = hasher.GetHashAndReset();
-        var hashResult = Sha512256.ComputeHash(bytes);
-
-        Span<char> hashResultChars = stackalloc char[Base32.GetEncodedLength(hashResult)];
-        Base32.ToBase32(hashResult, hashResultChars);
-        return hashResultChars.ToString();
+        using var sha256 = SHA256.Create();
+        var hasher = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        hasher.AppendData(bytes);
+        
+        var hashResult = hasher.GetHashAndReset();
+        var hashresult2 = SHA256.HashData(bytes);
+        var result = RickBase32.ToBase32(hashResult);
+        var result2 = RickBase32.ToBase32(hashresult2);
+        
+        var equal = result == result2;
+        return RickBase32.ToBase32(hashResult);
     }
 
     public static Dictionary<string, List<string>> ParseClaims(Dictionary<string, JsonNode> data)

@@ -74,3 +74,15 @@ public static class VaultUserExtensions
     private static bool HasClaim(this VaultUser user, string claimType, string claimValue) 
         => user.Claims.TryGetValue(claimType, out var claims) && claims.Contains(claimValue);
 }
+
+internal static class InternalExtensions
+{
+    public static void AddClaim(this Dictionary<string, List<string>> dict, string key, string value)
+    {
+        if (!dict.ContainsKey(key))
+            dict[key] = [];
+        
+        if (!dict[key].Contains(value))
+            dict[key].Add(value);
+    }
+}
