@@ -1,0 +1,22 @@
+<CommandDisplay Prompt="vault login">
+    <LinkButton InlineBlock="true" Selected="Selected == LoginSelection.Token" Text="[token]" Href="/demo/token"/>
+
+    <LinkButton InlineBlock="true" Selected="Selected == LoginSelection.Seed"  Text="[seed]" Href="/demo/seed"/>
+
+    <LinkButton InlineBlock="true" Selected="Selected == LoginSelection.Generate"  Text="[generate]" Href="/demo/generate"/>
+</CommandDisplay>
+
+@code {
+
+    [Parameter]
+    public LoginSelection Selected { get; set; } = LoginSelection.None;
+
+
+    public enum LoginSelection
+    {
+        None,
+        Token,
+        Seed,
+        Generate
+    }
+}

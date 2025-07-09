@@ -1,0 +1,17 @@
+<div class="terminal-form-group" id="@Id-group">
+    <button type="@(Submit ? "submit" : "button")" id="@Id" class="terminal-button" @onclick="OnClick">@Text</button>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool Submit { get; set; } = false;
+
+    [Parameter]
+    public Action? OnClick { get; set; }
+}

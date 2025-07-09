@@ -1,0 +1,61 @@
+@page "/demo/generate"
+@using System.Text.Json
+@using System.Text.Json.Nodes
+@using NATS.Jwt.Models
+@using NATS.NKeys
+@using RickDotNet.Base.Utils
+
+<PageTitle>crowdx-vault - demo</PageTitle>
+
+<VaultLoginPrompt Selected="VaultLoginPrompt.LoginSelection.Generate" />
+
+<CommandDisplay Prompt="vault login --generate">
+    <form action="/demo/token" method="post" @formname="login-token-form">
+        <AntiforgeryToken />
+        <input type="hidden" name="token-text" value="@jwt"/>
+        <CommandSubmit Text="[login]"/>
+        <CommandInfo Text="save both keys" />
+        <CommandOutput Label="public_key" Text="@publicKey" />
+        <CommandOutput Label="seed" Text="@seed" />
+        <CommandOutput Label="payload" Text="@claimsJson" />
+        <CommandOutput Label="jwt" Text="@jwt" />
+    </form>
+</CommandDisplay>
+
+
+@code {
+    
+    private string seed = string.Empty;
+    private string publicKey = string.Empty;
+    private string claimsJson = string.Empty;
+    private string jwt = string.Empty;
+    
+    private static JsonSerializerOptions JsonSerializerOptions => new()
+    {
+        WriteIndented = true,
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault
+    };
+    protected override void OnInitialized()
+    {
+        var keyPair = KeyPair.CreatePair(PrefixByte.Account);
+        seed = keyPair.GetSeed();
+        publicKey = keyPair.GetPublicKey();
+        
+        var vaultId = TextUtils.RandomBase32(15);
+        var claims = new NatsGenericClaims
+        {
+            Issuer = publicKey, // self-signed
+            Subject = publicKey,
+            Expires = DateTimeOffset.UtcNow.AddMonths(6),
+            Data = new Dictionary<string, JsonNode>()
+            {
+                { "vault:admin", vaultId }
+            }
+        };
+        
+        claimsJson = JsonSerializer.Serialize(claims, JsonSerializerOptions);
+        jwt = JwtUtil.Encode(claims, keyPair);
+        
+    }
+    
+}

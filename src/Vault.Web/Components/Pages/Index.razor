@@ -1,10 +1,20 @@
-@* 
-  This page isn't displayed.
-  The entrypoint for the app is in wwwroot/index.html
-  
-  HTMX 'pages' are in the Htmx folder.
-  Partials are in Htmx/Partials.
-  
-  Blazor functionaly can be added by using the BlazorLayout
-  and loading a Blazor page route directly.
-*@
+@page "/"
+@using NATS.Jwt.Models
+@using NATS.NKeys
+@inject VaultSettings Settings
+
+<PageTitle>crowdx-vault</PageTitle>
+
+<CommandDisplay Prompt="vault help">
+    <p style="margin-bottom: 0.5rem;">More information is coming. Until then, check out the demo.</p>
+    <LinkButton Text="[demo]" Href="/demo"/>
+</CommandDisplay>
+
+
+@code {
+
+    protected override void OnInitialized()
+    {
+
+    }
+}

@@ -1,3 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
-@Body
+<header class="terminal-nav">
+    <span style="color: var(--terminal-green);">crowdx-vault@terminal:~$</span>
+    <nav style="display: inline-block; margin-left: 2rem;">
+        <a href="/demo">[demo]</a>
+        <a href="/tools">[tools]</a>
+        <a href="https://github.com/rickdotnet/crowdx-vault" target="_blank">[github]</a>
+    </nav>
+</header>
+<main id="content" hx-get="/htmx/home" hx-trigger="load" class="terminal-container">
+    @Body
+</main>

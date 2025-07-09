@@ -1,10 +1,9 @@
 <div class="terminal-form-group">
     <label for="@Id" class="terminal-label">@Label</label>
-    <input type="text" name="@Id" id="@Id" value="foo" class="terminal-input"/>
+    <input value="@Text" type="@Type" name="@Id" id="@Id" class="terminal-input"/>
 </div>
 
 @code {
-
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
@@ -13,5 +12,7 @@
 
     [Parameter]
     public string Text { get; set; } = string.Empty;
-
+    
+    [Parameter]
+    public string Type { get; set; } = "text";
 }

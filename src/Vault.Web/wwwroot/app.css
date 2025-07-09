@@ -159,9 +159,6 @@
   .static {
     position: static;
   }
-  .block {
-    display: block;
-  }
   .hidden {
     display: none;
   }
@@ -223,6 +220,11 @@
     cursor: pointer;
     transition: all 0.2s;
   }
+  .terminal-button.selected {
+    background-color: var(--terminal-border);
+    color: var(--terminal-green);
+    border-color: var(--terminal-green);
+  }
   .terminal-button:hover {
     background-color: var(--terminal-border);
     color: var(--terminal-green);
@@ -282,11 +284,14 @@
     content: 'i ';
     color: var(--terminal-cyan);
   }
-  .htmx-indicator {
+  .terminal-info {
+    margin-bottom: 0.5rem;
+  }
+  .loading-indicator {
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
   }
-  .htmx-request .htmx-indicator {
+  .htmx-request .loading-indicator {
     opacity: 1;
   }
   .htmx-request .terminal-button {

@@ -16,4 +16,14 @@
       <ProjectReference Include="..\Vault\Vault.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Models\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Htmx\Partials\VaultGet.razor" />
+      <_ContentIncludedByDefault Remove="Components\Htmx\Partials\VaultPut.razor" />
+      <_ContentIncludedByDefault Remove="Components\Htmx\Partials\VaultResult.razor" />
+    </ItemGroup>
+
 </Project>

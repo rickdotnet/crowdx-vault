@@ -1,0 +1,34 @@
+@page "/demo/token"
+
+<PageTitle>crowdx-vault - demo</PageTitle>
+
+<VaultLoginPrompt Selected="VaultLoginPrompt.LoginSelection.Token" />
+
+<CommandDisplay Prompt="vault login --token">
+    <EditForm Model="string.Empty" Enhance FormName="login-token-form" OnSubmit="HandleLogin">
+        <CommandInput Id="token-text" Label="token" Text="@TokenInput" />
+        <CommandSubmit Text="[login]" />
+    </EditForm>
+</CommandDisplay>
+
+
+@code {
+    
+    [SupplyParameterFromForm(Name = "token-text")]
+    private string TokenInput { get; set; } = string.Empty;
+    
+    private void HandleLogin()
+    {
+        if (!string.IsNullOrEmpty(TokenInput))
+        {
+            // Add actual token validation logic here
+        }
+        else
+        {
+            
+        }
+    }
+
+    
+
+}

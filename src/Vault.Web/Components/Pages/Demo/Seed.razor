@@ -1,0 +1,34 @@
+@page "/demo/seed"
+
+<PageTitle>crowdx-vault - demo</PageTitle>
+
+<VaultLoginPrompt Selected="VaultLoginPrompt.LoginSelection.Seed" />
+
+<CommandDisplay Prompt="vault login --seed">
+    <EditForm Model="string.Empty" Enhance FormName="seed-token-form" OnSubmit="HandleLogin">
+        <CommandInput Id="seed-text" Type="password" Label="seed" Text="@SeedText" />
+        <CommandSubmit Text="[login]" />
+    </EditForm>
+</CommandDisplay>
+
+
+@code {
+    
+    [SupplyParameterFromForm(Name = "seed-text")]
+    private string SeedText { get; set; } = string.Empty;
+    
+    private void HandleLogin()
+    {
+        if (!string.IsNullOrEmpty(SeedText))
+        {
+            // Add actual token validation logic here
+        }
+        else
+        {
+            
+        }
+    }
+
+    
+
+}
