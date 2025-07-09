@@ -50,6 +50,7 @@ jobs:
         id: push
         uses: docker/build-push-action@v6
         with:
+          file: ./build/Dockerfile
           context: .
           push: true
           tags: |
